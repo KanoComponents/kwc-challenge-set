@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -13,17 +14,59 @@
     <link rel="import" href="../kwc-challenge-set.html">
 
     <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles"></style>
+        <style is="custom-style" include="demo-pages-shared-styles"></style>
     </custom-style>
-  </head>
-  <body>
-    <div class="vertical-section-container centered">
-      <h3>Basic kwc-challenge-set demo</h3>
-      <demo-snippet>
-        <template>
-          <kwc-challenge-set></kwc-challenge-set>
-        </template>
-      </demo-snippet>
+
+    <script>
+        var challengeSet = {
+            "title": "Flash and draw the lights",
+            "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
+            "category": "kano-code-challenges-pixel-intro",
+            "medal-disabled": "static/challenges/training/pixel_medal_disabled.svg",
+            "medal-enabled": "static/challenges/training/pixel_intro.svg",
+            "challenges": [
+                {
+                    "title": "Pixel lights on",
+                    "slug": "pixel_intro_1"
+                },
+                {
+                    "title": "Pixel color picker",
+                    "slug": "pixel_intro_2"
+                },
+                {
+                    "title": "Pixel color random loop",
+                    "slug": "pixel_intro_3"
+                },
+                {
+                    "title": "Pixel point",
+                    "slug": "pixel_intro_4"
+                }
+            ],
+            "products": [
+                "lightboard",
+                "RPK"
+            ]
+        };
+
+        document.addEventListener('WebComponentsReady', () => {
+            var kwcChallengeSet = document.getElementById('set-one');
+            kwcChallengeSet.challengeSet = challengeSet;
+            kwcChallengeSet.progress = 1;
+        });
+
+    </script>
+
+</head>
+
+<body>
+    <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
+        <h3>Basic kwc-challenge-set demo</h3>
+        <demo-snippet>
+            <template>
+                <kwc-challenge-set id='set-one'></kwc-challenge-set>
+            </template>
+        </demo-snippet>
     </div>
-  </body>
+</body>
+
 </html>
