@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>kwc-challenge-set test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../kwc-challenge-set.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <kwc-challenge-set></kwc-challenge-set>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('kwc-challenge-set', function() {
+        test('instantiating the element works', function() {
+          var element = fixture('basic');
+          assert.equal(element.is, 'kwc-challenge-set');
+        });
+      });
+    </script>
+  </body>
+</html>
