@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-image/iron-image.html">
-<!-- <link rel="import" href="../kwc-button/kwc-button.html"> -->
+<link rel="import" href="../kwc-button/kwc-button.html">
 <link rel="import" href="../web-components/kano-style/kano-style.html">
 
 <!--
@@ -91,21 +91,13 @@ To display a set of challenges for the user to complete.
                 margin: auto;
             }
             .control-button {
-                @apply --kano-round-button;
                 font-size: 1em;
                 margin: 40px 0 0 0;
-                text-transform: uppercase;
-                background-color: var(--color-kano-orange);
-                color: var(--color-porcelain);
-                border-radius: 100px;
-                padding: 0 20px;
                 height: 40px;
                 font-size: 14px;
                 max-width: 140px;
-                transition: 0.3s ease;
-            }
-            .control-button:hover {
-                background-color: var(--color-pumpkin);
+                display: inline-flex;
+                align-items: center;
             }
         </style>
         <div class="circle-box">
@@ -125,18 +117,18 @@ To display a set of challenges for the user to complete.
             <p class="control-content">
                 [[challengeSet.description]]
             </p>
-            <button class="control-button"
+            <kwc-button class="control-button"
                 hidden$="[[completed]]"
                 on-tap="_openNextChallenge"
             >
                 continue
-            </button>
-            <button class="control-button"
+            </kwc-button>
+            <kwc-button class="control-button"
                 hidden$="[[!completed]]"
                 on-tap="_openFirstChallenge"
             >
                 redo
-            </button>
+            </kwc-button>
         </div>
     </template>
     <script>
@@ -150,7 +142,8 @@ To display a set of challenges for the user to complete.
                     }
                 },
                 progress: {
-                    type: Number
+                    type: Number,
+                    value: 0
                 },
                 nextChallenge: {
                     type: Object,
