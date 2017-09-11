@@ -278,7 +278,7 @@ To display a set of challenges for the user to complete.
                 svg.setAttribute('width', (_radius * 2) + 50);
                 svg.setAttribute('height', (_radius * 2) + 50);
                 svg.setAttribute('id', 'progressContainer');
-                svgContainer.append(svg);
+                Polymer.dom(svgContainer).appendChild(svg);
                 callback(svg);
             },
             _drawStepCircles (svg, nodes, elementRadius) {
@@ -299,7 +299,7 @@ To display a set of challenges for the user to complete.
                     if (i < this.progress) {
                         stepCircle.setAttribute('class', 'stepCircle unlocked');
                         stepCircle.setAttributeNS(null, 'href', this._completeIconUrl);
-                        element.append(stepCircle);
+                        Polymer.dom(element).appendChild(stepCircle);
                     } else if (i === this.progress) {
                         stepCircle.setAttributeNS(null, 'href', this._currentIconUrl);
                         stepCircle.setAttribute('class', 'stepCircle unlocked');
@@ -312,11 +312,11 @@ To display a set of challenges for the user to complete.
                         avatar.setAttribute('y', (nodes[i].y - 12));
                         avatar.setAttribute('index', i);
                         avatar.onclick = this._onChallengeClick.bind(this);
-                        element.append(stepCircle);
-                        element.append(avatar);
+                        Polymer.dom(element).appendChild(stepCircle);
+                        Polymer.dom(element).appendChild(avatar);
                     } else {
                         stepCircle.setAttributeNS(null, 'href', this._lockedIconUrl);
-                        element.append(stepCircle);
+                        Polymer.dom(element).appendChild(stepCircle);
                     }
                 }
             },
@@ -347,7 +347,9 @@ To display a set of challenges for the user to complete.
                     polyline.style.strokeDasharray = 4.5;
 
                     polyline.setAttribute('points',
-                        nodes[this.numNodes - 1].x + ',' + nodes[this.numNodes - 1].y + ' ' + nodes[this.numNodes - 1].x + ',' + (nodes[this.numNodes - 1].y + this.radius / 2) + ' '
+                        nodes[this.numNodes - 1].x + ',' + nodes[this.numNodes - 1].y +
+                        ' ' + nodes[this.numNodes - 1].x + ',' +
+                        (nodes[this.numNodes - 1].y + this.radius / 2) + ' '
                     );
                     polyline.setAttribute('stroke', '#e0e1e3');
                     polyline.setAttribute('stroke-width', 7);
@@ -356,7 +358,7 @@ To display a set of challenges for the user to complete.
                         polyline.style.strokeDasharray = 'none';
                     }
                     element = svg;
-                    element.append(polyline);
+                    Polymer.dom(element).appendChild(polyline);
                     let arc = document.createElementNS(xmlns, 'path');
                     arc.setAttribute('d', this._describeArc(
                         this.radius + 25,
@@ -372,7 +374,7 @@ To display a set of challenges for the user to complete.
                         arc.setAttribute('stroke', '#ffb300');
                         arc.style.strokeDasharray = 'none';
                     }
-                    element.append(arc);
+                    Polymer.dom(element).appendChild(arc);
 
                     let progressArc = document.createElementNS(xmlns, 'path');
                     progressArc.setAttribute('d', this._describeArc(
@@ -384,7 +386,7 @@ To display a set of challenges for the user to complete.
                     progressArc.setAttribute('stroke', '#ffb300');
                     progressArc.setAttribute('stroke-width', 7);
                     progressArc.setAttribute('fill', 'none');
-                    element.append(progressArc);
+                    Polymer.dom(element).appendChild(progressArc);
 
                     this._drawStepCircles(svg, nodes, 20);
                 });
