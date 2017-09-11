@@ -5,7 +5,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.9.0",
     "web-components": "git@github.com:KanoComputing/web-components.git#master",
-    "kwc-challenge-card": "git@github.com:KanoComponents/kwc-button.git#master"
+    "kwc-button": "git@github.com:KanoComponents/kwc-button.git#master"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

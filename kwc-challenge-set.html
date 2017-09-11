@@ -82,6 +82,7 @@ To display a set of challenges for the user to complete.
                 border-radius: 6px;
                 @apply --layout-vertical;
                 @apply --layout-center-justified;
+                align-items: flex-start;
             }
             .circle-box iron-image {
                 width: 120px;
@@ -91,13 +92,7 @@ To display a set of challenges for the user to complete.
                 margin: auto;
             }
             .control-button {
-                font-size: 1em;
                 margin: 40px 0 0 0;
-                height: 40px;
-                font-size: 14px;
-                max-width: 140px;
-                display: inline-flex;
-                align-items: center;
             }
         </style>
         <div class="circle-box">
@@ -346,6 +341,7 @@ To display a set of challenges for the user to complete.
             _drawChallengeProgress () {
                 let nodes = this._createNodes(this.numNodes, this.radius),
                     xmlns = 'http://www.w3.org/2000/svg';
+                if (!nodes.length){ return; }
                 this._createChallengeSvg(this.radius,  svg => {
                     let polyline = document.createElementNS(xmlns, 'polyline');
                     polyline.style.strokeDasharray = 4.5;
