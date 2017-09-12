@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -10,21 +11,71 @@
     <script src="../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../kwc-challenge-set.html">
-  </head>
-  <body>
+</head>
+
+<body>
     <test-fixture id="basic">
-      <template>
-        <kwc-challenge-set></kwc-challenge-set>
-      </template>
+        <template>
+            <kwc-challenge-set></kwc-challenge-set>
+        </template>
     </test-fixture>
 
     <script>
-      suite('kwc-challenge-set', function() {
-        test('instantiating the element works', function() {
-          var element = fixture('basic');
-          assert.equal(element.is, 'kwc-challenge-set');
+        var challengeSet = {
+                "title": "Flash and draw the lights",
+                "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
+                "medal-disabled": "static/challenges/training/pixel_medal_disabled.svg",
+                "medal-enabled": "static/challenges/training/pixel_intro.svg",
+                "challenges": [
+                    {
+                        "title": "Pixel lights on",
+                        "slug": "pixel_intro_1"
+                    },
+                    {
+                        "title": "Pixel color picker",
+                        "slug": "pixel_intro_2"
+                    },
+                    {
+                        "title": "Pixel color random loop",
+                        "slug": "pixel_intro_3"
+                    },
+                    {
+                        "title": "Pixel point",
+                        "slug": "pixel_intro_4"
+                    }
+                ]
+            },
+            progress = 3;
+
+        suite('kwc-challenge-set', function () {
+            test('instantiating the basic element works', function () {
+                var element = fixture('basic');
+                assert.equal(element.is, 'kwc-challenge-set');
+            });
         });
-      });
+        suite('default-use', function () {
+            var element;
+            
+            setup(function () {
+                element = fixture('basic');
+                element.challengeSet = challengeSet;
+                element.progress = progress;
+            });
+            
+            test('instantiating the default element works', function () {
+                assert.equal(element.is, 'kwc-challenge-set');
+            });
+
+            test('number of progress nodes is equal to number of challenges', function (done) {
+                flush(function(){
+                    var imgElms = Polymer.dom(element.root).querySelectorAll('svg > image');
+                    assert.lengthOf(imgElms, challengeSet.challenges.length + 1);
+                    done();
+                });
+            });
+
+        });
     </script>
-  </body>
+</body>
+
 </html>
