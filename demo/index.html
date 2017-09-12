@@ -65,9 +65,9 @@
                     var progress = 1;
                  -->
                 <kwc-challenge-set
-                challenge-set="[[challengeSet]]"
-                progress="[[progress]]"
-            ></kwc-challenge-set>
+                    challenge-set="[[challengeSet]]"
+                    progress="[[progress]]"
+                ></kwc-challenge-set>
             </template>
         </demo-snippet>
     </div>
@@ -129,6 +129,13 @@
                 two.progress = 1;
                 three.challengeSet = challengeSet;
                 three.progress = 4;
+                var cSetElms = document.getElementsByTagName('kwc-challenge-set');
+                for(var i=0, elem; elem = cSetElms[i]; i++){
+                    elem.addEventListener('open-kano-code', function(e){
+                        // document.getElementById('one').appendChild(document.createTextNode("You clicked on " + e.detail.slug));
+                        alert("You clicked on " + e.detail.slug);
+                    });
+                }
             });
     
         </script>
