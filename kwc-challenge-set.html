@@ -197,7 +197,7 @@ To display a set of challenges for the user to complete.
                 }
             },
             observers:  [
-                '_onProgressChanged(progress, challengeSet.*)'
+                '_onProgressChanged(radius, progress, challengeSet.*)'
             ],
             attached () {
                 this._drawChallengeProgress();
@@ -257,8 +257,6 @@ To display a set of challenges for the user to complete.
                 return completed ? this.challengeSet['medal-enabled'] : this.challengeSet['medal-disabled'];
             },
             _createNodes (_numNodes, _radius) {
-                //TODO: Why is radius not always set?
-                _radius = _radius || 125;
                 let nodes = [],
                     width = (_radius * 2) + 50,
                     height = (_radius * 2) + 50,
@@ -344,18 +342,18 @@ To display a set of challenges for the user to complete.
                     };
             },
             _drawChallengeProgress () {
-                let _radius = this.radius || 125;
-                let nodes = this._createNodes(this.numNodes, _radius),
+                // let _radius = this.radius || 125;
+                let nodes = this._createNodes(this.numNodes, this.radius),
                     xmlns = 'http://www.w3.org/2000/svg';
                 if (!nodes.length){ return; }
-                this._createChallengeSvg(_radius,  svg => {
+                this._createChallengeSvg(this.radius,  svg => {
                     let polyline = document.createElementNS(xmlns, 'polyline');
                     polyline.style.strokeDasharray = 4.5;
 
                     polyline.setAttribute('points',
                         nodes[this.numNodes - 1].x + ',' + nodes[this.numNodes - 1].y +
                         ' ' + nodes[this.numNodes - 1].x + ',' +
-                        (nodes[this.numNodes - 1].y + _radius / 2) + ' '
+                        (nodes[this.numNodes - 1].y + this.radius / 2) + ' '
                     );
                     polyline.setAttribute('stroke', '#e0e1e3');
                     polyline.setAttribute('stroke-width', 7);
@@ -367,9 +365,9 @@ To display a set of challenges for the user to complete.
                     Polymer.dom(element).appendChild(polyline);
                     let arc = document.createElementNS(xmlns, 'path');
                     arc.setAttribute('d', this._describeArc(
-                        _radius + 25,
-                        _radius + 25,
-                        _radius,
+                        this.radius + 25,
+                        this.radius + 25,
+                        this.radius,
                         360 / this.numNodes,
                         360));
                     arc.setAttribute('stroke', '#e0e1e3');
@@ -384,9 +382,9 @@ To display a set of challenges for the user to complete.
 
                     let progressArc = document.createElementNS(xmlns, 'path');
                     progressArc.setAttribute('d', this._describeArc(
-                        _radius + 25,
-                        _radius + 25,
-                        _radius,
+                        this.radius + 25,
+                        this.radius + 25,
+                        this.radius,
                         360 / this.numNodes,
                         (360 / this.numNodes) * (this.progress + 1)));
                     progressArc.setAttribute('stroke', '#ffb300');
