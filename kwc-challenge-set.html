@@ -107,7 +107,7 @@ To display a set of challenges for the user to complete.
                 <div class="circle-content">
                     <div id="canvas"></div>
                     <div id="progress"></div>
-                    <iron-image src="[[_computeCompleteImage(completed)]]"></iron-image>
+                    <iron-image src="[[_computeCompleteImage(_completed)]]"></iron-image>
                 </div>
             </div>
 
@@ -115,20 +115,20 @@ To display a set of challenges for the user to complete.
                 <p class="control-title">
                     [[challengeSet.title]]
                 </p>
-                <p class$="[[_computeCompleteClass(completed)]]">
-                    [[_computeProgressText(progress, completed)]]
+                <p class$="[[_computeCompleteClass(_completed)]]">
+                    [[_computeProgressText(progress, _completed)]]
                 </p>
                 <p class="control-content">
                     [[challengeSet.description]]
                 </p>
                 <kwc-button class="control-button"
-                    hidden$="[[completed]]"
+                    hidden$="[[_completed]]"
                     on-tap="_openNextChallenge"
                 >
                     continue
                 </kwc-button>
                 <kwc-button class="control-button"
-                    hidden$="[[!completed]]"
+                    hidden$="[[!_completed]]"
                     on-tap="_openFirstChallenge"
                 >
                     redo
@@ -140,31 +140,44 @@ To display a set of challenges for the user to complete.
         Polymer({
             is: 'kwc-challenge-set',
             properties: {
+                /*
+                 * The data for the challenge set to build a progress bar for.
+                 * @type {Object}
+                 */
                 challengeSet: {
                     type: Object,
                     value: () => {
                         return {};
                     }
                 },
+                /*
+                 * A number representing the number of challenges in this set that are completed.
+                 * @type {Number}
+                 */
                 progress: {
                     type: Number,
                     value: 0
                 },
-                nextChallenge: {
+                _nextChallenge: {
                     type: Object,
                     value: () => {
                         return {};
                     }
                 },
-                numNodes: {
+                _numNodes: {
                     type: Number,
                     computed: '_computeNumNodes(challengeSet)'
                 },
+                /*
+                 * The radius of each challenge progress circle in the progress bar.
+                 */
                 radius: {
                     type: Number,
                     value: 125
                 },
-
+                /*
+                 * The url of the current user's avatar. If none given a default icon is used.
+                 */
                 avatarUrl: {
                     type: String,
                     value: null
@@ -173,6 +186,9 @@ To display a set of challenges for the user to complete.
                     type: String,
                     computed: '_computeIconUrl("avatar", avatarUrl)'
                 },
+                /*
+                 * A url to use for completed challenges in the progess bar
+                 */
                 completeIconUrl: {
                     type: String,
                     value: null
@@ -181,6 +197,9 @@ To display a set of challenges for the user to complete.
                     type: String,
                     computed: '_computeIconUrl("complete", completeIconUrl)'
                 },
+                /*
+                 * A url for an icon to use for the current challenge in the progress bar.
+                 */
                 currentIconUrl: {
                     type: String,
                     value: null
@@ -189,6 +208,9 @@ To display a set of challenges for the user to complete.
                     type: String,
                     computed: '_computeIconUrl("current", currentIconUrl)'
                 },
+                /*
+                 * A url for an icon to used for locked challenges on the progress bar.
+                 */
                 lockedIconUrl: {
                     type: String,
                     value: null
@@ -197,8 +219,7 @@ To display a set of challenges for the user to complete.
                     type: String,
                     computed: '_computeIconUrl("locked", lockedIconUrl)'
                 },
-
-                completed: {
+                _completed: {
                     type: Boolean,
                     computed: '_computeComplete(progress, challengeSet.challenges.length)'
                 }
@@ -353,7 +374,7 @@ To display a set of challenges for the user to complete.
                     };
             },
             _drawChallengeProgress () {
-                let nodes = this._createNodes(this.numNodes, this.radius),
+                let nodes = this._createNodes(this._numNodes, this.radius),
                     xmlns = 'http://www.w3.org/2000/svg';
                 if (!nodes.length){ return; }
                 this._createChallengeSvg(this.radius,  svg => {
@@ -361,13 +382,13 @@ To display a set of challenges for the user to complete.
                     polyline.style.strokeDasharray = 4.5;
 
                     polyline.setAttribute('points',
-                        nodes[this.numNodes - 1].x + ',' + nodes[this.numNodes - 1].y +
-                        ' ' + nodes[this.numNodes - 1].x + ',' +
-                        (nodes[this.numNodes - 1].y + this.radius / 2) + ' '
+                        nodes[this._numNodes - 1].x + ',' + nodes[this._numNodes - 1].y +
+                        ' ' + nodes[this._numNodes - 1].x + ',' +
+                        (nodes[this._numNodes - 1].y + this.radius / 2) + ' '
                     );
                     polyline.setAttribute('stroke', '#e0e1e3');
                     polyline.setAttribute('stroke-width', 7);
-                    if (this.completed) {
+                    if (this._completed) {
                         polyline.setAttribute('stroke', '#ffb300');
                         polyline.style.strokeDasharray = 'none';
                     }
@@ -378,13 +399,13 @@ To display a set of challenges for the user to complete.
                         this.radius + 25,
                         this.radius + 25,
                         this.radius,
-                        360 / this.numNodes,
+                        360 / this._numNodes,
                         360));
                     arc.setAttribute('stroke', '#e0e1e3');
                     arc.setAttribute('stroke-width', 7);
                     arc.style.strokeDasharray = 4.5;
                     arc.setAttribute('fill', 'none');
-                    if (this.completed) {
+                    if (this._completed) {
                         arc.setAttribute('stroke', '#ffb300');
                         arc.style.strokeDasharray = 'none';
                     }
@@ -395,8 +416,8 @@ To display a set of challenges for the user to complete.
                         this.radius + 25,
                         this.radius + 25,
                         this.radius,
-                        360 / this.numNodes,
-                        (360 / this.numNodes) * (this.progress + 1)));
+                        360 / this._numNodes,
+                        (360 / this._numNodes) * (this.progress + 1)));
                     progressArc.setAttribute('stroke', '#ffb300');
                     progressArc.setAttribute('stroke-width', 7);
                     progressArc.setAttribute('fill', 'none');
@@ -419,8 +440,8 @@ To display a set of challenges for the user to complete.
                 let nextChallenge = this.challengeSet.challenges[index];
                 if (nextChallenge) {
                     this.set('selectedIndex', index);
-                    this.set('nextChallenge.title', nextChallenge.title);
-                    this.set('nextChallenge.slug', nextChallenge.slug);
+                    this.set('_nextChallenge.title', nextChallenge.title);
+                    this.set('_nextChallenge.slug', nextChallenge.slug);
                 }
                 this._drawChallengeProgress();
             },
@@ -437,7 +458,7 @@ To display a set of challenges for the user to complete.
             _openNextChallenge () {
                 this.fire('open-kano-code', {
                     type: 'challenge',
-                    slug: this.nextChallenge.slug
+                    slug: this._nextChallenge.slug
                 });
             },
             _openFirstChallenge () {

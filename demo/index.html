@@ -24,10 +24,7 @@
         <h3>kwc-challenge-set demo</h3>
         <demo-snippet>
             <template id="one" is="dom-bind">
-                <kwc-challenge-set
-                    challenge-set="[[challengeSet]]"
-                    progress="[[progress]]"    
-                ></kwc-challenge-set>
+                <kwc-challenge-set challenge-set="[[challengeSet]]"></kwc-challenge-set>
 
                 <!-- 
                     var challengeSet = {
@@ -54,7 +51,6 @@
                             }
                         ]
                     };
-                    var progress = 1;
                 -->
             </template>
         </demo-snippet>
@@ -124,16 +120,11 @@
                         "title": "Pixel point",
                         "slug": "pixel_intro_4"
                     }
-                ],
-                "products": [
-                    "lightboard",
-                    "RPK"
                 ]
             };
     
             document.addEventListener('WebComponentsReady', () => {
                 one.challengeSet = challengeSet;
-                one.progress = 0;
                 two.challengeSet = challengeSet;
                 two.progress = 1;
                 three.challengeSet = challengeSet;
