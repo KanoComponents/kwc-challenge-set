@@ -17,64 +17,130 @@
         <style is="custom-style" include="demo-pages-shared-styles"></style>
     </custom-style>
 
-    <script>
-        var challengeSet = {
-            "title": "Flash and draw the lights",
-            "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
-            "category": "kano-code-challenges-pixel-intro",
-            "medal-disabled": "static/challenges/training/pixel_medal_disabled.svg",
-            "medal-enabled": "static/challenges/training/pixel_intro.svg",
-            "challenges": [
-                {
-                    "title": "Pixel lights on",
-                    "slug": "pixel_intro_1"
-                },
-                {
-                    "title": "Pixel color picker",
-                    "slug": "pixel_intro_2"
-                },
-                {
-                    "title": "Pixel color random loop",
-                    "slug": "pixel_intro_3"
-                },
-                {
-                    "title": "Pixel point",
-                    "slug": "pixel_intro_4"
-                }
-            ],
-            "products": [
-                "lightboard",
-                "RPK"
-            ]
-        };
-
-        document.addEventListener('WebComponentsReady', () => {
-            var kwcChallengeSet = document.getElementById('set-one');
-            kwcChallengeSet.challengeSet = challengeSet;
-            kwcChallengeSet.progress = 1;
-        });
-
-    </script>
-
 </head>
 
 <body>
     <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
-        <h3>Basic kwc-challenge-set demo</h3>
+        <h3>kwc-challenge-set demo</h3>
         <demo-snippet>
-            <template>
-                <kwc-challenge-set id='set-one'></kwc-challenge-set>
+            <template id="one" is="dom-bind">
+                <kwc-challenge-set
+                    challenge-set="[[challengeSet]]"
+                    progress="[[progress]]"    
+                ></kwc-challenge-set>
+
+                <!-- 
+                    var challengeSet = {
+                        "title": "Flash and draw the lights",
+                        "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
+                        "medal-disabled": "static/challenges/training/pixel_medal_disabled.svg",
+                        "medal-enabled": "static/challenges/training/pixel_intro.svg",
+                        "challenges": [
+                            {
+                                "title": "Pixel lights on",
+                                "slug": "pixel_intro_1"
+                            },
+                            {
+                                "title": "Pixel color picker",
+                                "slug": "pixel_intro_2"
+                            },
+                            {
+                                "title": "Pixel color random loop",
+                                "slug": "pixel_intro_3"
+                            },
+                            {
+                                "title": "Pixel point",
+                                "slug": "pixel_intro_4"
+                            }
+                        ]
+                    };
+                    var progress = 1;
+                -->
             </template>
         </demo-snippet>
     </div>
+
     <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
-        <h3>Basic kwc-challenge-set empty</h3>
+        <h3>kwc-challenge-set in progress</h3>
         <demo-snippet>
-            <template>
-                <kwc-challenge-set id='set-two'></kwc-challenge-set>
+            <template id="two" is="dom-bind">
+                <!--
+                    var challengeSet = { ... } //Four challenges
+                    var progress = 1;
+                 -->
+                <kwc-challenge-set
+                challenge-set="[[challengeSet]]"
+                progress="[[progress]]"
+            ></kwc-challenge-set>
             </template>
         </demo-snippet>
     </div>
+
+    <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
+        <h3>kwc-challenge-set completed</h3>
+        <demo-snippet>
+            <template id="three" is="dom-bind">
+                <!--
+                    var challengeSet = { ... } //Four challenges
+                    var progress = 4;
+                 -->
+                <kwc-challenge-set
+                challenge-set="[[challengeSet]]"
+                progress="[[progress]]"
+            ></kwc-challenge-set>
+            </template>
+        </demo-snippet>
+    </div>
+
+    <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
+        <h3>kwc-challenge-set empty</h3>
+        <demo-snippet>
+            <template>
+                <kwc-challenge-set ></kwc-challenge-set>
+            </template>
+        </demo-snippet>
+    </div>
+    <script>
+            var challengeSet = {
+                "title": "Flash and draw the lights",
+                "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
+                "category": "kano-code-challenges-pixel-intro",
+                "medal-disabled": "static/challenges/training/pixel_medal_disabled.svg",
+                "medal-enabled": "static/challenges/training/pixel_intro.svg",
+                "challenges": [
+                    {
+                        "title": "Pixel lights on",
+                        "slug": "pixel_intro_1"
+                    },
+                    {
+                        "title": "Pixel color picker",
+                        "slug": "pixel_intro_2"
+                    },
+                    {
+                        "title": "Pixel color random loop",
+                        "slug": "pixel_intro_3"
+                    },
+                    {
+                        "title": "Pixel point",
+                        "slug": "pixel_intro_4"
+                    }
+                ],
+                "products": [
+                    "lightboard",
+                    "RPK"
+                ]
+            };
+    
+            document.addEventListener('WebComponentsReady', () => {
+                one.challengeSet = challengeSet;
+                one.progress = 0;
+                two.challengeSet = challengeSet;
+                two.progress = 1;
+                three.challengeSet = challengeSet;
+                three.progress = 4;
+            });
+    
+        </script>
 </body>
 
 </html>
