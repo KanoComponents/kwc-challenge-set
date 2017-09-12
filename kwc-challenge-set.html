@@ -28,6 +28,9 @@ To display a set of challenges for the user to complete.
                 @apply --layout-center-justified;
                 position: relative;
             }
+            #container {
+                display: flex;
+            }
             .stepCircle.unlocked {
                 cursor: pointer;
             }
@@ -94,39 +97,43 @@ To display a set of challenges for the user to complete.
             .control-button {
                 margin: 40px 0 0 0;
             }
-            .control-button[hidden] {
+            [hidden] {
                 display:none !important;
             }
         </style>
-        <div class="circle-box">
-            <div class="circle-content">
-                <div id="canvas"></div>
-                <div id="progress"></div>
-                <iron-image src="[[_computeCompleteImage(completed)]]"></iron-image>
+        <div id="container" hidden$="[[!_hasData(challengeSet)]]">
+
+            <div class="circle-box">
+                <div class="circle-content">
+                    <div id="canvas"></div>
+                    <div id="progress"></div>
+                    <iron-image src="[[_computeCompleteImage(completed)]]"></iron-image>
+                </div>
             </div>
-        </div>
-        <div class="control-box">
-            <p class="control-title">
-                [[challengeSet.title]]
-            </p>
-            <p class$="[[_computeCompleteClass(completed)]]">
-                [[_computeProgressText(progress, completed)]]
-            </p>
-            <p class="control-content">
-                [[challengeSet.description]]
-            </p>
-            <kwc-button class="control-button"
-                hidden$="[[completed]]"
-                on-tap="_openNextChallenge"
-            >
-                continue
-            </kwc-button>
-            <kwc-button class="control-button"
-                hidden$="[[!completed]]"
-                on-tap="_openFirstChallenge"
-            >
-                redo
-            </kwc-button>
+
+            <div class="control-box">
+                <p class="control-title">
+                    [[challengeSet.title]]
+                </p>
+                <p class$="[[_computeCompleteClass(completed)]]">
+                    [[_computeProgressText(progress, completed)]]
+                </p>
+                <p class="control-content">
+                    [[challengeSet.description]]
+                </p>
+                <kwc-button class="control-button"
+                    hidden$="[[completed]]"
+                    on-tap="_openNextChallenge"
+                >
+                    continue
+                </kwc-button>
+                <kwc-button class="control-button"
+                    hidden$="[[!completed]]"
+                    on-tap="_openFirstChallenge"
+                >
+                    redo
+                </kwc-button>
+            </div>
         </div>
     </template>
     <script>
@@ -197,10 +204,13 @@ To display a set of challenges for the user to complete.
                 }
             },
             observers:  [
-                '_onProgressChanged(radius, progress, challengeSet.*)'
+                '_onProgressChanged(progress, radius, challengeSet.*)'
             ],
             attached () {
                 this._drawChallengeProgress();
+            },
+            _hasData (challengeSet) {
+                return challengeSet && challengeSet.challenges && challengeSet.challenges.length;
             },
             _computeIconUrl (name, propUrl) {
                 if (propUrl){
@@ -277,6 +287,7 @@ To display a set of challenges for the user to complete.
                 let svgContainer = this.$.progress,
                     xmlns = 'http://www.w3.org/2000/svg',
                     svg = document.createElementNS(xmlns, 'svg');
+                if (!svgContainer){ return; }
                 svgContainer.innerHTML = '';
                 svg.setAttribute('width', (_radius * 2) + 50);
                 svg.setAttribute('height', (_radius * 2) + 50);
@@ -342,7 +353,6 @@ To display a set of challenges for the user to complete.
                     };
             },
             _drawChallengeProgress () {
-                // let _radius = this.radius || 125;
                 let nodes = this._createNodes(this.numNodes, this.radius),
                     xmlns = 'http://www.w3.org/2000/svg';
                 if (!nodes.length){ return; }
