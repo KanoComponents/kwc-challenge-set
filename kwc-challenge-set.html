@@ -1,4 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../kwc-button/kwc-button.html">
+<link rel="import" href="../web-components/kano-style/kano-style.html">
+<link rel="import" href="./scripts/progressIcons.html">
 
 <!--
 `kwc-challenge-set`
@@ -8,27 +13,451 @@ To display a set of challenges for the user to complete.
 -->
 
 <dom-module id="kwc-challenge-set">
-  <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+    <template>
+        <style>
+            :host {
+                @apply --layout-horizontal;
+                @apply --layout-centered;
+                @apply --layout-around-justified;
+                padding: 60px 0;
+            }
+            .circle-box,
+            #progress {
+                @apply --layout-flex;
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                @apply --layout-center-justified;
+                position: relative;
+            }
+            #container {
+                display: flex;
+            }
+            .stepCircle.unlocked {
+                cursor: pointer;
+            }
+            image {
+                fill: var(--color-white);
+                stroke: var(--color-stone);
+                stroke-width: 4px;
+            }
+            image.unlocked {
+                fill: var(--color-kano-orange);
+                stroke: var(--color-kano-orange);
+            }
+            .circle-box {
+                padding-right: 15px;
+            }
+            .control-box {
+                padding-left: 15px;
+            }
+            .circle-content {
+                position: relative;
+            }
+            .control-subtitle,
+            .control-complete {
+                font-size: 16px;
+                font-weight: bold;
+                color: var(--color-grey);
+                margin: 0px;
+                padding: 0;
+                text-transform: uppercase;
+            }
+            .control-subtitle {
+                color: var(--color-grey);
+            }
+            .control-complete {
+                color: var(--color-kano-orange);
+            }
+            .control-content {
+                font-size: 16px;
+                color: var(--color-grey);
+                margin: 0px;
+                padding: 20px 0;
+            }
+            .control-title {
+                font-weight: bold;
+                color: var(--color-abbey);
+                font-family: var(--font-body);
+                font-size: 20px;
+                margin: 0;
+            }
+            .control-box {
+                @apply --layout-flex;
+                border-radius: 6px;
+                @apply --layout-vertical;
+                @apply --layout-center-justified;
+                align-items: flex-start;
+            }
+            .circle-box iron-image {
+                width: 120px;
+                height: 132px;
+                position: absolute;
+                @apply --layout-fit;
+                margin: auto;
+            }
+            .control-button {
+                margin: 40px 0 0 0;
+            }
+            [hidden] {
+                display:none !important;
+            }
+        </style>
+        <div id="container" hidden$="[[!_hasData(challengeSet)]]">
 
-  <script>
-    Polymer({
+            <div class="circle-box">
+                <div class="circle-content">
+                    <div id="canvas"></div>
+                    <div id="progress"></div>
+                    <iron-image src="[[_computeCompleteImage(_completed)]]"></iron-image>
+                </div>
+            </div>
 
-      is: 'kwc-challenge-set',
+            <div class="control-box">
+                <p class="control-title">
+                    [[challengeSet.title]]
+                </p>
+                <p class$="[[_computeCompleteClass(_completed)]]">
+                    [[_computeProgressText(progress, _completed)]]
+                </p>
+                <p class="control-content">
+                    [[challengeSet.description]]
+                </p>
+                <kwc-button class="control-button"
+                    hidden$="[[_completed]]"
+                    on-tap="_openNextChallenge"
+                >
+                    continue
+                </kwc-button>
+                <kwc-button class="control-button"
+                    hidden$="[[!_completed]]"
+                    on-tap="_openFirstChallenge"
+                >
+                    redo
+                </kwc-button>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'kwc-challenge-set',
+            properties: {
+                /*
+                 * The data for the challenge set to build a progress bar for.
+                 * @type {Object}
+                 */
+                challengeSet: {
+                    type: Object,
+                    value: () => {
+                        return {};
+                    }
+                },
+                /*
+                 * A number representing the number of challenges in this set that are completed.
+                 * @type {Number}
+                 */
+                progress: {
+                    type: Number,
+                    value: 0
+                },
+                _nextChallenge: {
+                    type: Object,
+                    value: () => {
+                        return {};
+                    }
+                },
+                _numNodes: {
+                    type: Number,
+                    computed: '_computeNumNodes(challengeSet)'
+                },
+                /*
+                 * The radius of each challenge progress circle in the progress bar.
+                 */
+                radius: {
+                    type: Number,
+                    value: 125
+                },
+                /*
+                 * The url of the current user's avatar. If none given a default icon is used.
+                 */
+                avatarUrl: {
+                    type: String,
+                    value: null
+                },
+                _avatarUrl: {
+                    type: String,
+                    computed: '_computeIconUrl("avatar", avatarUrl)'
+                },
+                /*
+                 * A url to use for completed challenges in the progess bar
+                 */
+                completeIconUrl: {
+                    type: String,
+                    value: null
+                },
+                _completeIconUrl: {
+                    type: String,
+                    computed: '_computeIconUrl("complete", completeIconUrl)'
+                },
+                /*
+                 * A url for an icon to use for the current challenge in the progress bar.
+                 */
+                currentIconUrl: {
+                    type: String,
+                    value: null
+                },
+                _currentIconUrl: {
+                    type: String,
+                    computed: '_computeIconUrl("current", currentIconUrl)'
+                },
+                /*
+                 * A url for an icon to used for locked challenges on the progress bar.
+                 */
+                lockedIconUrl: {
+                    type: String,
+                    value: null
+                },
+                _lockedIconUrl: {
+                    type: String,
+                    computed: '_computeIconUrl("locked", lockedIconUrl)'
+                },
+                _completed: {
+                    type: Boolean,
+                    computed: '_computeComplete(progress, challengeSet.challenges.length)'
+                }
+            },
+            observers:  [
+                '_onProgressChanged(progress, radius, challengeSet.*)'
+            ],
+            attached () {
+                this._drawChallengeProgress();
+            },
+            _hasData (challengeSet) {
+                return challengeSet && challengeSet.challenges && challengeSet.challenges.length;
+            },
+            _computeIconUrl (name, propUrl) {
+                if (propUrl){
+                    return propUrl
+                }
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'kwc-challenge-set',
-        },
-      },
+                return KWCCHALLENGESETassets[name];
 
-    });
-  </script>
+            },
+            _computeButtonText (completed) {
+                return completed ? 'redo' : 'continue';
+            },
+            _computeComplete (progress, total) {
+                return progress >= total;
+            },
+            _computeProgressText (progress, completed) {
+                if (!this.challengeSet || !this.challengeSet.challenges) {
+                    return '0 / 0';
+                }
+                if (!completed) {
+                    return `${progress || 0} / ${this.challengeSet.challenges.length}`;
+                } else {
+                    return 'complete';
+                }
+            },
+            _computeNumNodes (challengeSet) {
+                if (!challengeSet || !challengeSet.challenges) {
+                    return 0;
+                }
+                return challengeSet.challenges.length;
+            },
+            _computeCompleteClass (completed) {
+                return completed ? 'control-complete' : 'control-subtitle';
+            },
+            _computeCompleteImage (completed) {
+                return completed ? this.challengeSet['medal-enabled'] : this.challengeSet['medal-disabled'];
+            },
+            _createNodes (_numNodes, _radius) {
+                let nodes = [],
+                    width = (_radius * 2) + 50,
+                    height = (_radius * 2) + 50,
+                    angle,
+                    x,
+                    y,
+                    i;
+
+                for (i = 0; i < _numNodes; i++) {
+                    angle = ((i / (_numNodes / 2)) * Math.PI) - (90 * (Math.PI / 180)) + (2 * (Math.PI / _numNodes));
+                    x = (_radius * Math.cos(angle)) + (width / 2);
+                    y = (_radius * Math.sin(angle)) + (width / 2);
+                    nodes.push({'id': i, 'x': x, 'y': y});
+                }
+                return nodes;
+            },
+            _createChallengeSvg (_radius, callback) {
+                let svgContainer = this.$.progress,
+                    xmlns = 'http://www.w3.org/2000/svg',
+                    svg = document.createElementNS(xmlns, 'svg');
+                if (!svgContainer){ return; }
+                svgContainer.innerHTML = '';
+                svg.setAttribute('width', (_radius * 2) + 50);
+                svg.setAttribute('height', (_radius * 2) + 50);
+                svg.setAttribute('id', 'progressContainer');
+                Polymer.dom(svgContainer).appendChild(svg);
+                callback(svg);
+            },
+            _drawStepCircles (svg, nodes, elementRadius) {
+                let xmlns = 'http://www.w3.org/2000/svg',
+                    element = svg;
+                if (!this.progress) {
+                    this.progress = 0;
+                }
+                for (let i = 0; i < nodes.length; i++) {
+                    let stepCircle = document.createElementNS(xmlns, 'image');
+                    stepCircle.setAttribute('index', i);
+                    stepCircle.setAttribute('class', 'stepCircle');
+                    stepCircle.setAttributeNS(null, 'height', '50');
+                    stepCircle.setAttributeNS(null, 'width', '50');
+                    stepCircle.setAttribute('x', (nodes[i].x - 25));
+                    stepCircle.setAttribute('y', (nodes[i].y - 25));
+                    stepCircle.onclick = this._onChallengeClick.bind(this);
+                    if (i < this.progress) {
+                        stepCircle.setAttribute('class', 'stepCircle unlocked');
+                        stepCircle.setAttributeNS(null, 'href', this._completeIconUrl);
+                        Polymer.dom(element).appendChild(stepCircle);
+                    } else if (i === this.progress) {
+                        stepCircle.setAttributeNS(null, 'href', this._currentIconUrl);
+                        stepCircle.setAttribute('class', 'stepCircle unlocked');
+                        let avatar = document.createElementNS(xmlns, 'image');
+                        avatar.setAttributeNS(null, 'height', '25');
+                        avatar.setAttributeNS(null, 'width', '25');
+                        avatar.setAttributeNS(null, 'href', this._avatarUrl);
+                        avatar.setAttribute('cursor', 'pointer');
+                        avatar.setAttribute('x', (nodes[i].x - 12));
+                        avatar.setAttribute('y', (nodes[i].y - 12));
+                        avatar.setAttribute('index', i);
+                        avatar.onclick = this._onChallengeClick.bind(this);
+                        Polymer.dom(element).appendChild(stepCircle);
+                        Polymer.dom(element).appendChild(avatar);
+                    } else {
+                        stepCircle.setAttributeNS(null, 'href', this._lockedIconUrl);
+                        Polymer.dom(element).appendChild(stepCircle);
+                    }
+                }
+            },
+            _describeArc (x, y, radius, startAngle, endAngle) {
+                endAngle = endAngle || 360;
+                let start = this._polarToCartesian(x, y, radius, endAngle),
+                    end = this._polarToCartesian(x, y, radius, startAngle),
+                    largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1',
+                    d = [
+                        'M', start.x, start.y,
+                        'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
+                    ].join(' ');
+                return d;
+            },
+            _polarToCartesian (centerX, centerY, radius, angleInDegrees) {
+                let angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+                return {
+                        x: centerX + (radius * Math.cos(angleInRadians)),
+                        y: centerY + (radius * Math.sin(angleInRadians))
+                    };
+            },
+            _drawChallengeProgress () {
+                let nodes = this._createNodes(this._numNodes, this.radius),
+                    xmlns = 'http://www.w3.org/2000/svg';
+                if (!nodes.length){ return; }
+                this._createChallengeSvg(this.radius,  svg => {
+                    let polyline = document.createElementNS(xmlns, 'polyline');
+                    polyline.style.strokeDasharray = 4.5;
+
+                    polyline.setAttribute('points',
+                        nodes[this._numNodes - 1].x + ',' + nodes[this._numNodes - 1].y +
+                        ' ' + nodes[this._numNodes - 1].x + ',' +
+                        (nodes[this._numNodes - 1].y + this.radius / 2) + ' '
+                    );
+                    polyline.setAttribute('stroke', '#e0e1e3');
+                    polyline.setAttribute('stroke-width', 7);
+                    if (this._completed) {
+                        polyline.setAttribute('stroke', '#ffb300');
+                        polyline.style.strokeDasharray = 'none';
+                    }
+                    element = svg;
+                    Polymer.dom(element).appendChild(polyline);
+                    let arc = document.createElementNS(xmlns, 'path');
+                    arc.setAttribute('d', this._describeArc(
+                        this.radius + 25,
+                        this.radius + 25,
+                        this.radius,
+                        360 / this._numNodes,
+                        360));
+                    arc.setAttribute('stroke', '#e0e1e3');
+                    arc.setAttribute('stroke-width', 7);
+                    arc.style.strokeDasharray = 4.5;
+                    arc.setAttribute('fill', 'none');
+                    if (this._completed) {
+                        arc.setAttribute('stroke', '#ffb300');
+                        arc.style.strokeDasharray = 'none';
+                    }
+                    Polymer.dom(element).appendChild(arc);
+
+                    let progressArc = document.createElementNS(xmlns, 'path');
+                    progressArc.setAttribute('d', this._describeArc(
+                        this.radius + 25,
+                        this.radius + 25,
+                        this.radius,
+                        360 / this._numNodes,
+                        (360 / this._numNodes) * (this.progress + 1)));
+                    progressArc.setAttribute('stroke', '#ffb300');
+                    progressArc.setAttribute('stroke-width', 7);
+                    progressArc.setAttribute('fill', 'none');
+                    Polymer.dom(element).appendChild(progressArc);
+
+                    this._drawStepCircles(svg, nodes, 20);
+                });
+            },
+            _onProgressChanged (progress) {
+                let index = progress || 0;
+                if (!this.challengeSet || !this.challengeSet.challenges) {
+                    this.set('selectedIndex', index);
+                    return;
+                }
+                if (index < this.challengeSet.challenges.length) {
+                    index = progress;
+                } else {
+                    index = this.challengeSet.challenges.length - 1;
+                }
+                let nextChallenge = this.challengeSet.challenges[index];
+                if (nextChallenge) {
+                    this.set('selectedIndex', index);
+                    this.set('_nextChallenge.title', nextChallenge.title);
+                    this.set('_nextChallenge.slug', nextChallenge.slug);
+                }
+                this._drawChallengeProgress();
+            },
+            _onChallengeClick (e) {
+                let index = e.target.getAttribute('index');
+                if (index <= this.progress) {
+                    let selectedChallenge = this.challengeSet.challenges[index];
+                    this.fire('open-kano-code', {
+                        type: 'challenge',
+                        slug: selectedChallenge.slug
+                    });
+                }
+            },
+            _openNextChallenge () {
+                this.fire('open-kano-code', {
+                    type: 'challenge',
+                    slug: this._nextChallenge.slug
+                });
+            },
+            _openFirstChallenge () {
+                if (
+                    !this.challengeSet
+                    || !this.challengeSet.challenges
+                    || !this.challengeSet.challenges.length
+                ) {
+                    return;
+                }
+                let challengeSlug = this.challengeSet.challenges[0].slug;
+                this.fire('open-kano-code', {
+                    type: 'challenge',
+                    slug: challengeSlug
+                });
+            }
+        });
+    </script>
 </dom-module>
