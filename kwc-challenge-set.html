@@ -21,17 +21,56 @@ To display a set of challenges for the user to complete.
                 @apply --layout-around-justified;
                 padding: 60px 0;
             }
-            .circle-box,
-            #progress {
-                @apply --layout-flex;
-                @apply --layout-horizontal;
-                @apply --layout-center;
-                @apply --layout-center-justified;
-                position: relative;
+            @media (min-width: 720px) {
+                #container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    flex-direction: column;
+                    max-height: 300px;
+                }
+                #container > div {
+                    width: 50%;
+                }
+                #container > div:first-child {
+                    height: 100%;
+                }
+                #container > div:nth-child(2),
+                #container > div:last-child {
+                    height: 20%;
+                }
+                #container > div:nth-child(3) {
+                    height: 60%;
+                }
             }
-            #container {
-                display: flex;
+            @media (max-width: 719px) {
+                :host {
+                    padding: 10px 0
+                }
+                #container {
+                    display: flex;
+                    flex-direction: row;
+                    max-height: 500px;
+                    flex-wrap: wrap;
+                }
+                #container > div:first-child {
+                    order: 3;
+                    width: 100%;
+                    margin-top:10%
+                }
+                #container > div:nth-child(2) {
+                    order: 0;
+                    width: 50%
+                }
+                #container > div:nth-child(4) {
+                    order: 2;
+                    width: 40%;
+                    margin-left: 10%
+                }
+                #container > div:nth-child(3) {
+                    order: 4;
+                }
             }
+
             .stepCircle.unlocked {
                 cursor: pointer;
             }
@@ -91,15 +130,16 @@ To display a set of challenges for the user to complete.
                 @apply --layout-center-justified;
                 align-items: flex-start;
             }
+            .title-box {}
+            .content-box {}
+            .button-box {}
             .circle-box iron-image {
                 width: 120px;
                 height: 132px;
                 position: absolute;
                 @apply --layout-fit;
                 margin: auto;
-            }
-            .control-button {
-                margin: 40px 0 0 0;
+                margin-left: 90px;
             }
             [hidden] {
                 display:none !important;
@@ -115,16 +155,22 @@ To display a set of challenges for the user to complete.
                 </div>
             </div>
 
-            <div class="control-box">
-                <p class="control-title">
+            <div class="title-box">
+                <p class="title-title">
                     [[challengeSet.title]]
                 </p>
                 <p class$="[[_computeCompleteClass(_completed)]]">
                     [[_computeProgressText(progress, _completed)]]
                 </p>
+            </div>
+
+            <div class="content-box">
                 <p class="control-content">
                     [[challengeSet.description]]
                 </p>
+            </div>
+
+            <div class='button-box'>
                 <kwc-button class="control-button"
                     hidden$="[[_completed]]"
                     on-tap="_openNextChallenge"
