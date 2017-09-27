@@ -21,6 +21,13 @@ To display a set of challenges for the user to complete.
                 @apply --layout-around-justified;
                 padding: 60px 0;
             }
+            #container[disabled] {
+                filter: grayscale(100%);
+                opacity: 0.5;
+            }
+            #container[disabled] .stepCircle.unlocked {
+                cursor: initial;
+            }
             @media (min-width: 720px) {
                 #container {
                     display: flex;
@@ -145,7 +152,7 @@ To display a set of challenges for the user to complete.
                 display:none !important;
             }
         </style>
-        <div id="container" hidden$="[[!_hasData(challengeSet)]]">
+        <div id="container" hidden$="[[!_hasData(challengeSet)]]" disabled$="[[disabled]]">
 
             <div class="circle-box">
                 <div class="circle-content">
@@ -174,13 +181,13 @@ To display a set of challenges for the user to complete.
                 <kwc-button class="control-button"
                     hidden$="[[_completed]]"
                     on-tap="_openNextChallenge"
-                >
+                    disabled$="[[disabled]]">
                     continue
                 </kwc-button>
                 <kwc-button class="control-button"
                     hidden$="[[!_completed]]"
                     on-tap="_openFirstChallenge"
-                >
+                    disabled$="[[disabled]]">
                     redo
                 </kwc-button>
             </div>
@@ -272,6 +279,14 @@ To display a set of challenges for the user to complete.
                 _completed: {
                     type: Boolean,
                     computed: '_computeComplete(progress, challengeSet.challenges.length)'
+                },
+                /**
+                 * Flags if this challenge set is disabled
+                 * @type {Boolean}
+                 */
+                disabled: {
+                    type: Boolean,
+                    value: false
                 }
             },
             observers:  [
@@ -371,6 +386,7 @@ To display a set of challenges for the user to complete.
                         stepCircle.setAttributeNS(null, 'href', this._currentIconUrl);
                         stepCircle.setAttribute('class', 'stepCircle unlocked');
                         let avatar = document.createElementNS(xmlns, 'image');
+                        avatar.setAttribute('class', 'stepCircle unlocked');
                         avatar.setAttributeNS(null, 'height', '25');
                         avatar.setAttributeNS(null, 'width', '25');
                         avatar.setAttributeNS(null, 'href', this._avatarUrl);
@@ -478,6 +494,9 @@ To display a set of challenges for the user to complete.
                 this._drawChallengeProgress();
             },
             _onChallengeClick (e) {
+                if (this.disabled) {
+                    return;
+                }
                 let index = e.target.getAttribute('index');
                 if (index <= this.progress) {
                     let selectedChallenge = this.challengeSet.challenges[index];
@@ -487,7 +506,10 @@ To display a set of challenges for the user to complete.
                     });
                 }
             },
-            _openNextChallenge () {
+            _openNextChallenge (e) {
+                if (this.disabled) {
+                    return;
+                }
                 this.fire('open-kano-code', {
                     type: 'challenge',
                     slug: this._nextChallenge.slug
@@ -498,6 +520,7 @@ To display a set of challenges for the user to complete.
                     !this.challengeSet
                     || !this.challengeSet.challenges
                     || !this.challengeSet.challenges.length
+                    || this.disabled
                 ) {
                     return;
                 }

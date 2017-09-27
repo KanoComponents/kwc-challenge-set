@@ -26,7 +26,7 @@
             <template id="one" is="dom-bind">
                 <kwc-challenge-set challenge-set="[[challengeSet]]"></kwc-challenge-set>
 
-                <!-- 
+                <!--
                     var challengeSet = {
                         "title": "Flash and draw the lights",
                         "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
@@ -89,6 +89,42 @@
     </div>
 
     <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
+        <h3>kwc-challenge-set disabled</h3>
+        <demo-snippet>
+            <template id="four" is="dom-bind">
+                <kwc-challenge-set challenge-set="[[challengeSet]]" disabled$="[[disabled]]"></kwc-challenge-set>
+
+                <!--
+                    var challengeSet = {
+                        "title": "Flash and draw the lights",
+                        "description": "Turn on lights, change colors, make them move and sparkle. Paint pictures, learn to make frame by frame animations.",
+                        "medal-disabled": "static/challenges/training/pixel_medal_disabled.svg",
+                        "medal-enabled": "static/challenges/training/pixel_intro.svg",
+                        "challenges": [
+                            {
+                                "title": "Pixel lights on",
+                                "slug": "pixel_intro_1"
+                            },
+                            {
+                                "title": "Pixel color picker",
+                                "slug": "pixel_intro_2"
+                            },
+                            {
+                                "title": "Pixel color random loop",
+                                "slug": "pixel_intro_3"
+                            },
+                            {
+                                "title": "Pixel point",
+                                "slug": "pixel_intro_4"
+                            }
+                        ]
+                    };
+                -->
+            </template>
+        </demo-snippet>
+    </div>
+
+    <div style="max-width: 800px; margin: auto;" class="vertical-section-container centered">
         <h3>kwc-challenge-set empty</h3>
         <demo-snippet>
             <template>
@@ -122,13 +158,16 @@
                     }
                 ]
             };
-    
+
             document.addEventListener('WebComponentsReady', () => {
                 one.challengeSet = challengeSet;
                 two.challengeSet = challengeSet;
                 two.progress = 1;
                 three.challengeSet = challengeSet;
                 three.progress = 4;
+                four.challengeSet = challengeSet;
+                four.disabled = true;
+                four.progress = 1;
                 var cSetElms = document.getElementsByTagName('kwc-challenge-set');
                 for(var i=0, elem; elem = cSetElms[i]; i++){
                     elem.addEventListener('open-kano-code', function(e){
@@ -137,7 +176,7 @@
                     });
                 }
             });
-    
+
         </script>
 </body>
 
