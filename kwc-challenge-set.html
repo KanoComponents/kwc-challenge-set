@@ -21,6 +21,11 @@ To display a set of challenges for the user to complete.
                 @apply --layout-around-justified;
                 padding: 60px 0;
             }
+            #container {
+                @apply --layout-flex;
+                max-width: 720px;
+                width: 100%;
+            }
             #container[disabled] {
                 filter: grayscale(100%);
                 opacity: 0.5;
@@ -76,8 +81,17 @@ To display a set of challenges for the user to complete.
                 #container > div:nth-child(3) {
                     order: 4;
                 }
+                .circle-content,
+                svg {
+                    display: block;
+                    margin: auto;
+                }
             }
-
+            .circle-content,
+            svg {
+                max-width: 300px;
+                width: 100%;
+            }
             .stepCircle.unlocked {
                 cursor: pointer;
             }
@@ -129,6 +143,7 @@ To display a set of challenges for the user to complete.
             }
             p {
                 font-family: var(--font-body);
+                margin: 0;
             }
             .control-box {
                 @apply --layout-flex;
@@ -146,7 +161,6 @@ To display a set of challenges for the user to complete.
                 position: absolute;
                 @apply --layout-fit;
                 margin: auto;
-                margin-left: 90px;
             }
             [hidden] {
                 display:none !important;
@@ -357,8 +371,7 @@ To display a set of challenges for the user to complete.
                     svg = document.createElementNS(xmlns, 'svg');
                 if (!svgContainer){ return; }
                 svgContainer.innerHTML = '';
-                svg.setAttribute('width', (_radius * 2) + 50);
-                svg.setAttribute('height', (_radius * 2) + 50);
+                svg.setAttribute('viewBox', `0 0 ${(_radius * 2) + 50} ${(_radius * 2) + 50}`);
                 svg.setAttribute('id', 'progressContainer');
                 Polymer.dom(svgContainer).appendChild(svg);
                 callback(svg);
