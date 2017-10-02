@@ -340,7 +340,7 @@ To display a set of challenges for the user to complete.
                 }
             },
             observers:  [
-                '_onProgressChanged(progress, radius, challengeSet.*)'
+                '_onProgressChanged(progress, radius, _currentIconUrl, _lockedIconUrl, _completeIconUrl, challengeSet.*)'
             ],
             attached () {
                 this._drawChallengeProgress();
@@ -526,7 +526,6 @@ To display a set of challenges for the user to complete.
             _onProgressChanged (progress) {
                 let index = progress || 0;
                 if (!this.challengeSet || !this.challengeSet.challenges) {
-                    this.set('selectedIndex', index);
                     return;
                 }
                 if (index < this.challengeSet.challenges.length) {
@@ -536,7 +535,6 @@ To display a set of challenges for the user to complete.
                 }
                 let nextChallenge = this.challengeSet.challenges[index];
                 if (nextChallenge) {
-                    this.set('selectedIndex', index);
                     this.set('_nextChallenge.title', nextChallenge.title);
                     this.set('_nextChallenge.slug', nextChallenge.slug);
                 }
