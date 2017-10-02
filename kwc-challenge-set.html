@@ -1,8 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../kwc-button/kwc-button.html">
-<link rel="import" href="../web-components/kano-style/kano-style.html">
+<link rel="import" href="../kwc-style/kwc-style.html">
 <link rel="import" href="./scripts/progressIcons.html">
 
 <!--
@@ -21,6 +22,9 @@ To display a set of challenges for the user to complete.
                 @apply --layout-around-justified;
                 padding: 60px 0;
             }
+            :host * {
+                box-sizing: border-box;
+            }
             #container {
                 @apply --layout-flex;
                 max-width: 720px;
@@ -33,63 +37,28 @@ To display a set of challenges for the user to complete.
             #container[disabled] .stepCircle.unlocked {
                 cursor: initial;
             }
-            @media (min-width: 720px) {
-                #container {
-                    display: flex;
-                    flex-wrap: wrap;
-                    flex-direction: column;
-                    max-height: 300px;
-                }
-                #container > div {
-                    width: 50%;
-                }
-                #container > div:first-child {
-                    height: 100%;
-                }
-                #container > div:nth-child(2),
-                #container > div:last-child {
-                    height: 20%;
-                }
-                #container > div:nth-child(3) {
-                    height: 60%;
-                }
+            :host([horizontal]) #container {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+                @apply --layout-justified;
+                max-height: 300px;
             }
-            @media (max-width: 719px) {
-                :host {
-                    padding: 10px 0
-                }
-                #container {
-                    display: flex;
-                    flex-direction: row;
-                    max-height: 500px;
-                    flex-wrap: wrap;
-                }
-                #container > div:first-child {
-                    order: 3;
-                    width: 100%;
-                    margin-top:10%
-                }
-                #container > div:nth-child(2) {
-                    order: 0;
-                    width: 50%
-                }
-                #container > div:nth-child(4) {
-                    order: 2;
-                    width: 40%;
-                    margin-left: 10%
-                }
-                #container > div:nth-child(3) {
-                    order: 4;
-                }
-                .circle-content,
-                svg {
-                    display: block;
-                    margin: auto;
-                }
+            :host([vertical])  {
+                padding: 10px 0
+            }
+            :host([vertical]) #container {
+                @apply --layout-vertical;
+                @apply --layout-start;
+                @apply --layout-center-justified;
+                max-height: 500px;
+            }
+            :host([vertical]) .circle-content,
+            :host([vertical]) svg {
+                display: block;
+                margin: auto;
             }
             .circle-content,
             svg {
-                max-width: 300px;
                 width: 100%;
             }
             .stepCircle.unlocked {
@@ -104,8 +73,18 @@ To display a set of challenges for the user to complete.
                 fill: var(--color-kano-orange);
                 stroke: var(--color-kano-orange);
             }
-            .circle-box {
-                padding-right: 15px;
+            :host([horizontal]) .circle-box {
+                padding-right: 16px;
+                max-width: 300px;
+                width: 50%;
+            }
+            :host([horizontal]) .content-box {
+                max-width: 300px;
+                width: 50%;
+            }
+            :host([vertical]) .circle-box {
+                margin: auto;
+                padding: 16px 0;
             }
             .control-box {
                 padding-left: 15px;
@@ -118,21 +97,35 @@ To display a set of challenges for the user to complete.
                 font-size: 16px;
                 font-weight: bold;
                 color: var(--color-grey);
-                margin: 0px;
+                margin: 0;
                 padding: 0;
                 text-transform: uppercase;
             }
             .control-subtitle {
                 color: var(--color-grey);
+                font-family: var(--font-heading);
+            }
+            :host([horizontal]) .control-subtitle {
+                margin: 0 0 32px 0;
             }
             .control-complete {
                 color: var(--color-kano-orange);
             }
-            .control-content {
-                font-size: 16px;
+            .content-body {
                 color: var(--color-grey);
-                margin: 0px;
-                padding: 20px 0;
+                font-family: var(--font-heading);
+                font-size: 16px;
+                margin: 0 0 32px 0;
+                padding: 0;
+            }
+            :host([vertical]) .content-body {
+                width: 100%;
+            }
+            .header {
+                @apply --layout-horizontal;
+                @apply --layout-start;
+                @apply --layout-justified;
+                width: 100%;
             }
             .control-title {
                 font-weight: bold;
@@ -141,8 +134,11 @@ To display a set of challenges for the user to complete.
                 font-size: 20px;
                 margin: 0;
             }
-            p {
-                font-family: var(--font-body);
+            h3 {
+                color: var(--color-abbey);
+                font-family: var(--font-heading);
+                font-size: 20px;
+                font-weight: bold;
                 margin: 0;
             }
             .control-box {
@@ -150,24 +146,47 @@ To display a set of challenges for the user to complete.
                 border-radius: 6px;
                 @apply --layout-vertical;
                 @apply --layout-center-justified;
-                align-items: flex-start;
+                @apply --layout-start;
             }
-            .title-box {}
-            .content-box {}
-            .button-box {}
             .circle-box iron-image {
                 width: 120px;
                 height: 132px;
-                position: absolute;
                 @apply --layout-fit;
                 margin: auto;
             }
             [hidden] {
-                display:none !important;
+                display: none !important;
             }
         </style>
+        <iron-media-query query="(max-width: 720px)" query-matches="{{vertical}}"></iron-media-query>
+        <iron-media-query query="(min-width: 721px)" query-matches="{{horizontal}}"></iron-media-query>
         <div id="container" hidden$="[[!_hasData(challengeSet)]]" disabled$="[[disabled]]">
-
+            <template is="dom-if" if="[[vertical]]">
+                <div class="header">
+                    <div class="title-box">
+                        <h3 class="title-title">
+                            [[challengeSet.title]]
+                        </h3>
+                        <p class$="[[_computeCompleteClass(_completed)]]">
+                            [[_computeProgressText(progress, _completed)]]
+                        </p>
+                    </div>
+                    <div class='button-box'>
+                        <kwc-button class="control-button"
+                            hidden$="[[_completed]]"
+                            on-tap="_openNextChallenge"
+                            disabled$="[[disabled]]">
+                            Continue
+                        </kwc-button>
+                        <kwc-button class="control-button"
+                            hidden$="[[!_completed]]"
+                            on-tap="_openFirstChallenge"
+                            disabled$="[[disabled]]">
+                            Redo
+                        </kwc-button>
+                    </div>
+                </div>
+            </template>
             <div class="circle-box">
                 <div class="circle-content">
                     <div id="canvas"></div>
@@ -175,35 +194,36 @@ To display a set of challenges for the user to complete.
                     <iron-image src="[[_computeCompleteImage(_completed)]]" sizing="contain"></iron-image>
                 </div>
             </div>
-
-            <div class="title-box">
-                <p class="title-title">
-                    [[challengeSet.title]]
-                </p>
-                <p class$="[[_computeCompleteClass(_completed)]]">
-                    [[_computeProgressText(progress, _completed)]]
-                </p>
-            </div>
-
             <div class="content-box">
-                <p class="control-content">
+                <template is="dom-if" if="[[horizontal]]">
+                    <div class="title-box">
+                        <h3 class="title-title">
+                            [[challengeSet.title]]
+                        </h3>
+                        <p class$="[[_computeCompleteClass(_completed)]]">
+                            [[_computeProgressText(progress, _completed)]]
+                        </p>
+                    </div>
+                </template>
+                <p class="content-body">
                     [[challengeSet.description]]
                 </p>
-            </div>
-
-            <div class='button-box'>
-                <kwc-button class="control-button"
-                    hidden$="[[_completed]]"
-                    on-tap="_openNextChallenge"
-                    disabled$="[[disabled]]">
-                    continue
-                </kwc-button>
-                <kwc-button class="control-button"
-                    hidden$="[[!_completed]]"
-                    on-tap="_openFirstChallenge"
-                    disabled$="[[disabled]]">
-                    redo
-                </kwc-button>
+                <template is="dom-if" if="[[horizontal]]">
+                    <div class='button-box'>
+                        <kwc-button class="control-button"
+                            hidden$="[[_completed]]"
+                            on-tap="_openNextChallenge"
+                            disabled$="[[disabled]]">
+                            Continue
+                        </kwc-button>
+                        <kwc-button class="control-button"
+                            hidden$="[[!_completed]]"
+                            on-tap="_openFirstChallenge"
+                            disabled$="[[disabled]]">
+                            Redo
+                        </kwc-button>
+                    </div>
+                </template>
             </div>
         </div>
     </template>
@@ -301,6 +321,22 @@ To display a set of challenges for the user to complete.
                 disabled: {
                     type: Boolean,
                     value: false
+                },
+                /**
+                 * Media query-matched property to determine layout
+                 * @type {Boolean}
+                 */
+                horizontal: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
+                /**
+                 * Media query-matched property to determine layout
+                 * @type {Boolean}
+                 */
+                vertical: {
+                    type: Boolean,
+                    reflectToAttribute: true
                 }
             },
             observers:  [
