@@ -4,8 +4,9 @@
   "main": "kwc-challenge-set.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.9.0",
-    "web-components": "git@github.com:KanoComputing/web-components.git#master",
-    "kwc-button": "git@github.com:KanoComponents/kwc-button.git#master"
+    "kwc-button": "git@github.com:KanoComponents/kwc-button.git",
+    "kwc-style": "git@github.com:KanoComponents/kwc-style.git",
+    "iron-media-query": "^2.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
