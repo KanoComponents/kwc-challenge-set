@@ -5,6 +5,7 @@
 <link rel="import" href="../kwc-button/kwc-button.html">
 <link rel="import" href="../kwc-style/kwc-style.html">
 <link rel="import" href="./scripts/progressIcons.html">
+<link rel="import" href="./scripts/getMedalButton.html">
 
 <!--
 `kwc-challenge-set`
@@ -154,6 +155,14 @@ To display a set of challenges for the user to complete.
                 @apply --layout-fit;
                 margin: auto;
             }
+            .get-medal-button {
+                cursor: pointer;
+                transition: transform 0.1s;
+                transition-timing-function: ease-in-out;
+            }
+            .get-medal-button:hover {
+                transform: scale(1.1)
+            }
             [hidden] {
                 display: none !important;
             }
@@ -191,7 +200,15 @@ To display a set of challenges for the user to complete.
                 <div class="circle-content">
                     <div id="canvas"></div>
                     <div id="progress"></div>
-                    <iron-image src="[[_computeCompleteImage(_completed)]]" sizing="contain"></iron-image>
+                    <iron-image src="[[_computeCompleteImage(_completed, showMedals)]]"
+                                sizing="contain"></iron-image>
+                    <template is="dom-if" if="[[_isUpForClaim(_completed, showMedals)]]">
+                        <iron-image class="get-medal-button"
+                                    on-tap="_claimMedalClicked"
+                                    src="[[_computeGetMedalButtonUrl('button')]]"
+                                    sizing="contain">
+                                    </iron-image>
+                    </template>
                 </div>
             </div>
             <div class="content-box">
@@ -337,6 +354,16 @@ To display a set of challenges for the user to complete.
                 vertical: {
                     type: Boolean,
                     reflectToAttribute: true
+                },
+                /**
+                 * Flags if, after completing a challenge set, the user
+                 * should see the medal (badges) unlocked in the challenge
+                 * set circle.
+                 * @type {Boolean}
+                 */
+                showMedals: {
+                    type: Boolean,
+                    value: false
                 }
             },
             observers:  [
@@ -352,9 +379,17 @@ To display a set of challenges for the user to complete.
                 if (propUrl){
                     return propUrl
                 }
-
                 return KwcChallengeSet.assets[name];
-
+            },
+            /**
+             * Gets the encoded svg as a string ready to be placed on a `src`
+             * attribute. Assets stored on `scripts/getMedalButton.htm` as a
+             * dictionary.
+             * @param {String} name Key on the asset dictionary.
+             * @return {String}
+             */
+            _computeGetMedalButtonUrl (name) {
+                return KwcGetMedal.assets[name];
             },
             _computeButtonText (completed) {
                 return completed ? 'redo' : 'continue';
@@ -381,8 +416,41 @@ To display a set of challenges for the user to complete.
             _computeCompleteClass (completed) {
                 return completed ? 'control-complete' : 'control-subtitle';
             },
-            _computeCompleteImage (completed) {
-                return completed ? this.challengeSet['medal-enabled'] : this.challengeSet['medal-disabled'];
+
+            _computeCompleteImage (completed, showMedals) {
+                if (completed && showMedals) {
+                    return this.challengeSet['medal-enabled'];
+                } else {
+                    return this.challengeSet['medal-disabled'];
+                }
+            },
+            /**
+             * Calculates if user has completed the challenge set but it's not
+             * allowed to see the badge and clicks it.
+             * @param {Boolean} completed Flags if the challenge set is complete
+             * @param {Boolean} showMedals Flags if user is allowed to see the
+             *     medal once the challenge set is complete
+             * @return {Boolean}
+             */
+            _isUpForClaim (completed, showMedals) {
+                return completed && !showMedals;
+            },
+            /**
+             * Fired when a medal that is up to be claimed is clicked.
+             *
+             * @event disabled-medal-clicked
+             * @param {Object} challengeSet Challenge set for the clicked medal.
+             */
+            /**
+             * Handles tap/click event on "claim medal" button.
+             * If user has completed the challenge set but it's not allowed
+             * to see the badge and clicks it, fire event to  so the parent can
+             * hint on how to enable the medal (badge).
+             */
+            _claimMedalClicked () {
+                this.dispatchEvent(
+                    new CustomEvent('disabled-medal-clicked', this.challengeSet)
+                );
             },
             _createNodes (_numNodes, _radius) {
                 let nodes = [],
