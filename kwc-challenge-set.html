@@ -452,7 +452,10 @@ To display a set of challenges for the user to complete.
              */
             _claimMedalClicked () {
                 this.dispatchEvent(
-                    new CustomEvent('disabled-medal-clicked', this.challengeSet)
+                    new CustomEvent(
+                        'disabled-medal-clicked',
+                        { detail: this.challengeSet }
+                    )
                 );
             },
             _createNodes (_numNodes, _radius) {
