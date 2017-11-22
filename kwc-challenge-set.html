@@ -234,13 +234,13 @@ To display a set of challenges for the user to complete.
                             hidden$="[[_completed]]"
                             on-tap="_openNextChallenge"
                             disabled$="[[disabled]]">
-                            Continue
+                            [[buttonLabel]]
                         </kwc-button>
                         <kwc-button class="control-button"
                             hidden$="[[!_completed]]"
                             on-tap="_openFirstChallenge"
                             disabled$="[[disabled]]">
-                            Redo
+                            [[buttonLabel]]
                         </kwc-button>
                     </div>
                 </template>
@@ -367,6 +367,10 @@ To display a set of challenges for the user to complete.
                 showMedals: {
                     type: Boolean,
                     value: true
+                },
+                buttonLabel: {
+                    type: String,
+                    computed: '_computeButtonLabel(_completed, progress)'
                 }
             },
             observers:  [
@@ -650,6 +654,15 @@ To display a set of challenges for the user to complete.
                     type: 'challenge',
                     slug: challengeSlug
                 });
+            },
+            _computeButtonLabel (completed, progress) {
+                if (completed) {
+                    return 'Redo';
+                } else if (progress === 0) {
+                    return 'Start';
+                } else {
+                    return 'Continue';
+                }
             }
         });
     </script>
