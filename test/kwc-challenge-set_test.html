@@ -55,13 +55,13 @@
         });
         suite('default-use', function () {
             var element;
-            
+
             setup(function () {
                 element = fixture('basic');
                 element.challengeSet = challengeSet;
                 element.progress = progress;
             });
-            
+
             test('instantiating the default element works', function () {
                 assert.equal(element.is, 'kwc-challenge-set');
             });
@@ -72,6 +72,27 @@
                     assert.lengthOf(imgElms, challengeSet.challenges.length + 1);
                     done();
                 });
+            });
+
+            test('should display "start" on button label if no challenge is complete', function () {
+                let completed = false,
+                    progress = 0,
+                    label = element._computeButtonLabel(completed, progress);
+                assert.equal(label.toLowerCase(), 'Start'.toLowerCase());
+            });
+
+            test('should display "continue" on button label if no challenge set is not complete but started', function () {
+                let completed = false,
+                    progress = 1,
+                    label = element._computeButtonLabel(completed, progress);
+                assert.equal(label.toLowerCase(), 'Continue'.toLowerCase());
+            });
+
+            test('should display "redo" on button label if challenge set is completed', function () {
+                let completed = true,
+                    progress = 7,
+                    label = element._computeButtonLabel(completed, progress);
+                assert.equal(label.toLowerCase(), 'Redo'.toLowerCase());
             });
 
         });
