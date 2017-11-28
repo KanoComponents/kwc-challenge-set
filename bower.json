@@ -7,7 +7,9 @@
     "kwc-button": "git@github.com:KanoComponents/kwc-button.git",
     "kwc-style": "git@github.com:KanoComponents/kwc-style.git",
     "iron-media-query": "^2.0.0",
-    "iron-image": "^2.1.2"
+    "iron-image": "^2.1.2",
+    "iron-icon": "PolymerElements/iron-icon#^2.0.1",
+    "kwc-icons": "KanoComponents/kwc-icons#^1.4.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

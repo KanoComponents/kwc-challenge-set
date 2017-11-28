@@ -4,6 +4,8 @@
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 <link rel="import" href="../kwc-button/kwc-button.html">
 <link rel="import" href="../kwc-style/kwc-style.html">
+<link rel="import" href="../kwc-icons/kwc-icons.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="./scripts/progressIcons.html">
 <link rel="import" href="./scripts/getMedalButton.html">
 
@@ -58,6 +60,13 @@ To display a set of challenges for the user to complete.
                 display: block;
                 margin: auto;
             }
+            .button-box {
+                @apply --layout-horizontal;
+                @apply --layout-center;
+            }
+            .button-box button {
+                height: 100%;
+            }
             .circle-content,
             svg {
                 width: 100%;
@@ -109,6 +118,9 @@ To display a set of challenges for the user to complete.
             .control-subtitle {
                 color: var(--color-grey);
             }
+            .control-button {
+                @apply --layout-flex;
+            }
             :host([horizontal]) .control-subtitle {
                 margin: 0 0 32px 0;
             }
@@ -158,6 +170,37 @@ To display a set of challenges for the user to complete.
                 @apply --layout-fit;
                 margin: auto;
             }
+            button.link {
+                border: 0;
+                background: transparent;
+                cursor: pointer;
+            }
+            button.link:focus {
+                outline: none;
+                border: none;
+            }
+            button.link span {
+                display: inline-block;
+                font-family: var(--font-body);
+                color: var(--color-grey);
+                font-size: 14px;
+                line-height: 24px;
+                vertical-align: middle;
+                transition: color 300ms;
+            }
+            button.link:hover span {
+                color: var(--color-abbey);
+            }
+            iron-icon {
+                --iron-icon-width: 24px;
+                --iron-icon-height: 24px;
+                fill: var(--color-grey);
+                margin-right: 6px;
+                transition: fill 300ms;
+            }
+            button.link:hover iron-icon {
+                fill: var(--color-abbey);
+            }
             .get-medal-button {
                 cursor: pointer;
                 transition: transform 0.1s;
@@ -196,6 +239,9 @@ To display a set of challenges for the user to complete.
                             disabled$="[[disabled]]">
                             Redo
                         </kwc-button>
+                        <button type="button" class="link content-body" on-tap="_openChallengeFriend">
+                            <iron-icon icon="kwc-ui-icons:email"></iron-icon><span>Challenge a friend</span>
+                        </button>
                     </div>
                 </div>
             </template>
@@ -242,6 +288,9 @@ To display a set of challenges for the user to complete.
                             disabled$="[[disabled]]">
                             [[buttonLabel]]
                         </kwc-button>
+                        <button type="button" class="link" on-tap="_openChallengeFriend">
+                            <iron-icon icon="kwc-ui-icons:email"></iron-icon><span>Challenge a friend</span>
+                        </button>
                     </div>
                 </template>
             </div>
@@ -663,6 +712,11 @@ To display a set of challenges for the user to complete.
                 } else {
                     return 'Continue';
                 }
+            },
+            _openChallengeFriend () {
+                this.fire('open-challenge-friend', {
+                    setTitle: this.challengeSet.title
+                });
             }
         });
     </script>
