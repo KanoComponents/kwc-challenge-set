@@ -239,7 +239,7 @@ To display a set of challenges for the user to complete.
                             disabled$="[[disabled]]">
                             Redo
                         </kwc-button>
-                        <button type="button" class="link content-body" on-tap="_openChallengeFriend">
+                        <button type="button" class="link content-body" on-tap="_challengeFriend" hidden$="[[_hideChallengeFriend]]">
                             <iron-icon icon="kwc-ui-icons:email"></iron-icon><span>Challenge a friend</span>
                         </button>
                     </div>
@@ -288,7 +288,7 @@ To display a set of challenges for the user to complete.
                             disabled$="[[disabled]]">
                             [[buttonLabel]]
                         </kwc-button>
-                        <button type="button" class="link" on-tap="_openChallengeFriend">
+                        <button type="button" class="link" on-tap="_challengeFriend" hidden$="[[_hideChallengeFriend]]">
                             <iron-icon icon="kwc-ui-icons:email"></iron-icon><span>Challenge a friend</span>
                         </button>
                     </div>
@@ -420,6 +420,18 @@ To display a set of challenges for the user to complete.
                 buttonLabel: {
                     type: String,
                     computed: '_computeButtonLabel(_completed, progress)'
+                },
+                buttonLabel: {
+                    type: String,
+                    computed: '_computeButtonLabel(_completed, progress)'
+                },
+                /**
+                 * Flags if challenge-friend button is hidden
+                 * @type {Boolean}
+                 */
+                _hideChallengeFriend: {
+                    type: Boolean,
+                    value: false
                 }
             },
             observers:  [
@@ -713,8 +725,8 @@ To display a set of challenges for the user to complete.
                     return 'Continue';
                 }
             },
-            _openChallengeFriend () {
-                this.fire('open-challenge-friend', {
+            _challengeFriend () {
+                this.fire('challenge-friend', {
                     setTitle: this.challengeSet.title
                 });
             }
