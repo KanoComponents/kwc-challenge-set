@@ -239,7 +239,7 @@ To display a set of challenges for the user to complete.
                             disabled$="[[disabled]]">
                             Redo
                         </kwc-button>
-                        <button type="button" class="link content-body" on-tap="_challengeFriend" hidden$="[[_hideChallengeFriend]]">
+                        <button type="button" class="link content-body" on-tap="_challengeFriend" hidden$="[[hideChallengeFriend]]">
                             <iron-icon icon="kwc-ui-icons:email"></iron-icon><span>Challenge a friend</span>
                         </button>
                     </div>
@@ -288,7 +288,7 @@ To display a set of challenges for the user to complete.
                             disabled$="[[disabled]]">
                             [[buttonLabel]]
                         </kwc-button>
-                        <button type="button" class="link" on-tap="_challengeFriend" hidden$="[[_hideChallengeFriend]]">
+                        <button type="button" class="link" on-tap="_challengeFriend" hidden$="[[hideChallengeFriend]]">
                             <iron-icon icon="kwc-ui-icons:email"></iron-icon><span>Challenge a friend</span>
                         </button>
                     </div>
@@ -429,7 +429,7 @@ To display a set of challenges for the user to complete.
                  * Flags if challenge-friend button is hidden
                  * @type {Boolean}
                  */
-                _hideChallengeFriend: {
+                hideChallengeFriend: {
                     type: Boolean,
                     value: false
                 }
