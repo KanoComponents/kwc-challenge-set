@@ -21,7 +21,7 @@ To display a set of challenges for the user to complete.
         <style>
             :host {
                 @apply --layout-horizontal;
-                @apply --layout-centered;
+                @apply --layout-center;
                 @apply --layout-around-justified;
                 padding: 60px 0;
             }
@@ -134,6 +134,7 @@ To display a set of challenges for the user to complete.
                 padding: 0;
             }
             :host([vertical]) .content-body {
+                text-align: center;
                 width: 100%;
             }
             .header {
